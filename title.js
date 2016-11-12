@@ -41,7 +41,6 @@ export default class Title extends Component {
   }
 }
 
-
 const styles = StyleSheet.create({
   titleView: {
     height: 20,
