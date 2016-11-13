@@ -108,7 +108,9 @@ export default class ArticleList extends Component {
           userName: content.userName,
           navigator: this.props.navigator,
         }
-        g_articleList.push(article);
+        if (content.url && content.url != 'undefined' && content.url != '') {
+            g_articleList.push(article);
+        }
       }
       this.setState({dataSource: this.state.dataSource.cloneWithRows(g_articleList)});
     });
