@@ -9,6 +9,7 @@ import {
   WebView,
   TouchableHighlight,
   Navigator,
+  ToastAndroid,
 } from 'react-native';
 import EventEmitter from "react-native-eventemitter";
 import ShowArticle from './showArticle';
@@ -32,13 +33,13 @@ class Article extends Component {
 
   render() {
     return (
-      <TouchableHighlight underlayColor='#E1F6FF' onPress={() => this.handleClick()}>
+      <TouchableHighlight underlayColor='#c2c2c2' onPress={() => this.handleClick()}>
         <View style={styles.article}>
           <Image style={styles.image} source={{uri: this.props.contentImg}} />
           <View style={styles.right}>
             <View style={styles.rightTop}>
               <Text style={styles.userName}>{this.props.userName}</Text>
-              <Text style={styles.userName}>{this.getShowDate(this.props.date)}</Text>
+              <Text style={styles.date}>{this.getShowDate(this.props.date)}</Text>
             </View>
             <Text style={styles.title}>{this.props.title}</Text>
           </View>
@@ -48,6 +49,7 @@ class Article extends Component {
   }
 }
 
+//////////////////////////////////////////////////////////////////
 export default class ArticleList extends Component {
   constructor(props) {
     super(props);
@@ -65,6 +67,7 @@ export default class ArticleList extends Component {
     this.updateArticleList(this.state.typeId, this.state.currentPage);
     EventEmitter.on('updateTypeId', (typeId) => {
       if (this.state.typeId != typeId) {
+        this._listView.scrollTo({x: 0, y: 0, animated: false});
         g_articleList = [];
         this.updateArticleList(typeId, 0);
       }
@@ -112,16 +115,17 @@ export default class ArticleList extends Component {
   }
 
   _onEndReached() {
+    ToastAndroid.show('加载更多文章', ToastAndroid.SHORT);
     this.updateArticleList(this.state.typeId, this.state.currentPage + 1);
   }
 
   render() {
     return (
       <ListView
+        ref={component => this._listView = component}
         style={{flex: 1, marginTop: 40}}
         dataSource={this.state.dataSource}
         enableEmptySections={true}
-        onScroll={this.onScroll}
         onEndReached={this._onEndReached.bind(this)}
         onEndReachedThreshold={10}
         renderRow={(rowData) => {
@@ -140,6 +144,10 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 18,
+    fontWeight: 'bold',
+  },
+  date: {
+    fontSize: 14,
     fontWeight: 'bold',
   },
   title: {

@@ -4,7 +4,6 @@ import {
   Navigator,
   Text,
   TouchableHighlight,
-  BackAndroid,
   Alert,
 } from 'react-native';
 import ArticleList from './articleList';
@@ -66,5 +65,14 @@ class App extends Component {
     }
 }
 
+BackAndroid.addEventListener('hardwareBackPress', function() {
+  alert('dddd');
+  return true;
+    //  if (!this.onMainScreen()) {
+    //    this.goBack();
+    //    return true;
+    //  }
+    //  return false;
+});
 
 AppRegistry.registerComponent('awesome', () => App);

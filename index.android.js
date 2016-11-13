@@ -5,12 +5,47 @@ import {
   Text,
   TouchableHighlight,
   View,
+  BackAndroid,
+  ToastAndroid,
 } from 'react-native';
 import ArticleList from './articleList';
 import TypeList from './typeList'
 
-
 class App extends Component {
+  constructor(props) {
+      super(props);
+      this.handleBack = this._handleBack.bind(this);
+      this.backPressTime = [];
+      this._navigator = null;
+  }
+
+  componentDidMount() {
+    BackAndroid.addEventListener('hardwareBackPress', this.handleBack);
+  }
+
+  componentWillUnmount() {
+    BackAndroid.removeEventListener('hardwareBackPress', this.handleBack);
+  }
+
+  _handleBack() {
+    if (this._navigator && this._navigator.getCurrentRoutes().length > 1) {
+      this._navigator.pop();
+      return true;
+    }
+    // 两秒钟之内按两次Back键退出程序
+    this.backPressTime.push(new Date());
+    const count = this.backPressTime.length;
+    if (count >= 2) {
+      const ms = this.backPressTime[count - 1] - this.backPressTime[count - 2];
+      this.backPressTime = [];
+      if (ms <= 2000) {
+        return false;
+      }
+    }
+    ToastAndroid.show('再按一次退出程序', ToastAndroid.SHORT);
+    return true;
+  }
+
   onTypeList(route, navigator) {
     const pageName = "typeList";
     const routes = navigator.getCurrentRoutes();
@@ -26,7 +61,7 @@ class App extends Component {
   initLeftButton(route, navigator, index, navState) {
     if (index > 0) {
       return (
-        <TouchableHighlight underlayColor='#E1F6FF' onPress={() => navigator.pop()}>
+        <TouchableHighlight underlayColor='#c2c2c2' onPress={() => navigator.pop()}>
           <Text>    返回    </Text>
         </TouchableHighlight>
       );
@@ -36,7 +71,7 @@ class App extends Component {
 
   initRightButton(route, navigator, index, navState) {
     return (
-      <TouchableHighlight underlayColor='#E1F6FF' onPress={() => this.onTypeList(route, navigator)}>
+      <TouchableHighlight underlayColor='#c2c2c2' onPress={() => this.onTypeList(route, navigator)}>
         <Text>    类别    </Text>
       </TouchableHighlight>
     )
@@ -50,6 +85,7 @@ class App extends Component {
     const typeName = "热点";
     return (
         <Navigator
+          ref={component => this._navigator = component}
           navigationBar={
             <Navigator.NavigationBar
               routeMapper={{
