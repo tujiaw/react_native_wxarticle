@@ -50,6 +50,7 @@ class Article extends Component {
 }
 
 //////////////////////////////////////////////////////////////////
+
 export default class ArticleList extends Component {
   constructor(props) {
     super(props);
@@ -79,7 +80,7 @@ export default class ArticleList extends Component {
   }
 
   updateArticleList(typeId, page) {
-    let url = 'https://route.showapi.com/582-2?showapi_appid=17262&showapi_sign=21b693f98bd64e71a9bdbb5f7c76659c&showapi_timestamp=20161026214440a';
+    let url = 'https://route.showapi.com/582-2?showapi_appid=17262&showapi_sign=21b693f98bd64e71a9bdbb5f7c76659c';
     if (typeId >= 0) {
         url += ('&typeId=' + typeId);
     }
